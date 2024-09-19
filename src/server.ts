@@ -1,6 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import empleadoRoutes from './empreados/interfaces/http/v1/routes'; // Corrige el nombre de la carpeta
+import empleadoRoutes from './empreados/interfaces/http/v1/routes'; // Rutas de empleados
+import usuarioRoutes from './usuario/interfaces/http/v1/routes'; // Rutas de usuarios
+// import tiendaRoutes from './usuario/interfaces/http/routes';  // Rutas de tiendas (se incluyen en el archivo de rutas de usuarios)
 import pool from './empreados/infraestructura/dbConnection'; // Importa la conexión a la base de datos
 
 const app = express();
@@ -20,7 +22,9 @@ app.use(bodyParser.json());
 })();
 
 // Configurar las rutas de la API con prefijo /api/v1
-app.use('/api/v1', empleadoRoutes);
+app.use('/api/v1/', empleadoRoutes);  // Rutas de empleados
+app.use('/api/v1/', usuarioRoutes);    // Rutas de usuarios (incluye las de tiendas dentro)
+// app.use('/api/v1/tiendas', tiendaRoutes);      // Rutas para las tiendas si se necesitan separadas
 
 // Servidor escuchando en el puerto especificado
 app.listen(port, () => {
