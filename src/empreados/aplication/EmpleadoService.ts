@@ -16,18 +16,24 @@ export class EmpleadoService {
 
     // Crear un nuevo empleado
     async createEmpleado(nombre: string, puesto: string, salario: number): Promise<void> {
-        const empleado = new Empleado('', nombre, puesto, salario);  // Genera UUID automáticamente
+        const empleado = new Empleado(null, null, nombre, puesto, salario);  // Genera UUID automáticamente
         await this.empleadoRepository.create(empleado);
     }
 
     // Actualizar un empleado
-    async updateEmpleado(id: string, nombre: string, puesto: string, salario: number): Promise<void> {
-        const empleado = new Empleado(id, nombre, puesto, salario);  // Reutiliza el mismo UUID
-        await this.empleadoRepository.update(id, empleado);
+    async updateEmpleado(uuid: string, nombre: string, puesto: string, salario: number): Promise<void> {
+        // Aquí reutilizamos el mismo UUID y ID
+        const empleadoExistente = await this.empleadoRepository.findByUUID(uuid);
+        if (!empleadoExistente) {
+            throw new Error('Empleado no encontrado');
+        }
+        
+        const empleado = new Empleado(uuid, empleadoExistente.id, nombre, puesto, salario);  // Reutiliza el UUID e ID
+        await this.empleadoRepository.update(uuid, empleado);
     }
 
     // Eliminar un empleado
-    async deleteEmpleado(id: string): Promise<void> {
-        await this.empleadoRepository.delete(id);
+    async deleteEmpleado(uuid: string): Promise<void> {
+        await this.empleadoRepository.delete(uuid);
     }
 }
